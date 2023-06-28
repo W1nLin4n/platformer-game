@@ -1,4 +1,4 @@
-package com.mygdx.platformer.screen;
+package com.mygdx.platformer.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -13,17 +13,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.platformer.Platformer;
+import com.mygdx.platformer.tools.Constants;
 
 public class GameOverScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
+    private Platformer game;
 
-    private Game game;
-
-    public GameOverScreen(Game game) {
+    public GameOverScreen(Platformer game) {
         this.game = game;
-        viewport = new FitViewport(Platformer.V_WIDTH, Platformer.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, ((Platformer) game).batch);
+        viewport = new FitViewport(Constants.V_WIDTH, Constants.V_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, game.batch);
 
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
@@ -59,7 +59,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.mygdx.platformer.tool;
+package com.mygdx.platformer.tools;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -6,9 +6,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
-import com.mygdx.platformer.sprite.*;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.enemies.Enemy;
+import com.mygdx.platformer.sprites.enemies.Goomba;
+import com.mygdx.platformer.sprites.enemies.Turtle;
+import com.mygdx.platformer.sprites.tiles.Brick;
+import com.mygdx.platformer.sprites.tiles.Coin;
 
 public class B2DWorldCreator {
     private Array<Goomba> goombas;
@@ -27,13 +30,13 @@ public class B2DWorldCreator {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(Platformer.toMeters(rect.getX() + rect.getWidth()/2), Platformer.toMeters(rect.getY() + rect.getHeight()/2));
+            bodyDef.position.set(Constants.toMeters(rect.getX() + rect.getWidth()/2), Constants.toMeters(rect.getY() + rect.getHeight()/2));
 
             body = world.createBody(bodyDef);
 
-            shape.setAsBox(Platformer.toMeters(rect.getWidth()/2), Platformer.toMeters(rect.getHeight()/2));
+            shape.setAsBox(Constants.toMeters(rect.getWidth()/2), Constants.toMeters(rect.getHeight()/2));
             fixtureDef.shape = shape;
-            fixtureDef.filter.categoryBits = Platformer.GROUND_BIT;
+            fixtureDef.filter.categoryBits = Constants.GROUND_BIT;
             body.createFixture(fixtureDef);
         }
 
@@ -42,13 +45,13 @@ public class B2DWorldCreator {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(Platformer.toMeters(rect.getX() + rect.getWidth()/2), Platformer.toMeters(rect.getY() + rect.getHeight()/2));
+            bodyDef.position.set(Constants.toMeters(rect.getX() + rect.getWidth()/2), Constants.toMeters(rect.getY() + rect.getHeight()/2));
 
             body = world.createBody(bodyDef);
 
-            shape.setAsBox(Platformer.toMeters(rect.getWidth()/2), Platformer.toMeters(rect.getHeight()/2));
+            shape.setAsBox(Constants.toMeters(rect.getWidth()/2), Constants.toMeters(rect.getHeight()/2));
             fixtureDef.shape = shape;
-            fixtureDef.filter.categoryBits = Platformer.OBJECT_BIT;
+            fixtureDef.filter.categoryBits = Constants.OBJECT_BIT;
             body.createFixture(fixtureDef);
         }
 
@@ -66,14 +69,14 @@ public class B2DWorldCreator {
         goombas = new Array<>();
         for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            goombas.add(new Goomba(screen, Platformer.toMeters(rect.getX()), Platformer.toMeters(rect.getY())));
+            goombas.add(new Goomba(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
 
         // Turtles creation
         turtles = new Array<>();
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            turtles.add(new Turtle(screen, Platformer.toMeters(rect.getX()), Platformer.toMeters(rect.getY())));
+            turtles.add(new Turtle(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
     }
 

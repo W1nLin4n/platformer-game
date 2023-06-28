@@ -1,34 +1,32 @@
-package com.mygdx.platformer.screen;
+package com.mygdx.platformer.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.scene.Hud;
-import com.mygdx.platformer.sprite.*;
-import com.mygdx.platformer.tool.B2DWorldCreator;
-import com.mygdx.platformer.tool.WorldContactListener;
+import com.mygdx.platformer.scenes.Hud;
+import com.mygdx.platformer.screens.GameOverScreen;
+import com.mygdx.platformer.sprites.enemies.Enemy;
+import com.mygdx.platformer.sprites.items.Item;
+import com.mygdx.platformer.sprites.items.ItemDef;
+import com.mygdx.platformer.sprites.items.Mushroom;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.B2DWorldCreator;
+import com.mygdx.platformer.tools.Constants;
+import com.mygdx.platformer.tools.WorldContactListener;
 
-import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameScreen implements Screen {
@@ -40,7 +38,6 @@ public class GameScreen implements Screen {
     private Viewport gameViewport;
 
     // Tiled map variables
-    private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
@@ -58,16 +55,15 @@ public class GameScreen implements Screen {
 
     public GameScreen(Platformer game){
         this.game = game;
-        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+        atlas = game.assets.get("Mario_and_Enemies.pack", TextureAtlas.class);
         gameCamera = new OrthographicCamera();
-        gameViewport = new FitViewport(Platformer.toMeters(Platformer.V_WIDTH), Platformer.toMeters(Platformer.V_HEIGHT), gameCamera);
+        gameViewport = new FitViewport(Constants.toMeters(Constants.V_WIDTH), Constants.toMeters(Constants.V_HEIGHT), gameCamera);
         gameViewport.apply();
 
         hud = new Hud(game.batch);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, Platformer.toMeters(1));
+        map = game.assets.get("level1.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, Constants.toMeters(1));
         gameCamera.position.set(gameViewport.getWorldWidth()/2, gameViewport.getWorldHeight()/2, 0);
 
         world = new World(new Vector2(0, -10), true);
@@ -78,7 +74,7 @@ public class GameScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
-        music = game.assetManager.get("audio/music/mario_music.ogg", Music.class);
+        music = game.assets.get("audio/music/mario_music.ogg", Music.class);
         music.setLooping(true);
         music.play();
 
@@ -145,12 +141,12 @@ public class GameScreen implements Screen {
         handleInput(delta);
         handleSpawningItems();
 
-        world.step(1/Platformer.FPS, 6, 2);
+        world.step(1/ Constants.FPS, 6, 2);
 
         player.update(delta);
         for(Enemy enemy : b2dwc.getEnemies()) {
             enemy.update(delta);
-            if(enemy.getX() < player.getX() + Platformer.toMeters(240))
+            if(enemy.getX() < player.getX() + Constants.toMeters(240))
                 enemy.b2dbody.setActive(true);
         }
 
@@ -191,7 +187,7 @@ public class GameScreen implements Screen {
         hud.stage.draw();
 
         if(gameOver()) {
-            game.assetManager.get("audio/music/mario_music.ogg", Music.class).stop();
+            game.assets.get("audio/music/mario_music.ogg", Music.class).stop();
             game.setScreen(new GameOverScreen(game));
         }
     }
@@ -213,7 +209,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override

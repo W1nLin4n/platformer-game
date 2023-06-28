@@ -1,15 +1,14 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.tiles;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.Constants;
 
 public abstract class InteractiveTileObject {
     protected World world;
@@ -31,11 +30,11 @@ public abstract class InteractiveTileObject {
         PolygonShape shape = new PolygonShape();
 
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(Platformer.toMeters(bounds.getX() + bounds.getWidth()/2), Platformer.toMeters(bounds.getY() + bounds.getHeight()/2));
+        bodyDef.position.set(Constants.toMeters(bounds.getX() + bounds.getWidth()/2), Constants.toMeters(bounds.getY() + bounds.getHeight()/2));
 
         body = world.createBody(bodyDef);
 
-        shape.setAsBox(Platformer.toMeters(bounds.getWidth()/2), Platformer.toMeters(bounds.getHeight()/2));
+        shape.setAsBox(Constants.toMeters(bounds.getWidth()/2), Constants.toMeters(bounds.getHeight()/2));
         fixtureDef.shape = shape;
         fixture = body.createFixture(fixtureDef);
     }
@@ -50,6 +49,6 @@ public abstract class InteractiveTileObject {
 
     public TiledMapTileLayer.Cell getCell() {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(1);
-        return layer.getCell((int)(Platformer.toPixels(body.getPosition().x / 16)), (int)(Platformer.toPixels(body.getPosition().y / 16)));
+        return layer.getCell((int)(Constants.toPixels(body.getPosition().x / 16)), (int)(Constants.toPixels(body.getPosition().y / 16)));
     }
 }

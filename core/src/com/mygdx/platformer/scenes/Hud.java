@@ -1,4 +1,4 @@
-package com.mygdx.platformer.scene;
+package com.mygdx.platformer.scenes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.platformer.Platformer;
+import com.mygdx.platformer.tools.Constants;
 
 public class Hud implements Disposable {
     public Stage stage;
@@ -32,7 +32,7 @@ public class Hud implements Disposable {
         timeCount = 0;
         score = 0;
 
-        viewport = new FitViewport(Platformer.V_WIDTH, Platformer.V_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Constants.V_WIDTH, Constants.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();

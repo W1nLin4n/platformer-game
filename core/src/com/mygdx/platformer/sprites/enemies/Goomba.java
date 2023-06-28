@@ -1,4 +1,4 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.enemies;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.Constants;
 
 public class Goomba extends Enemy {
     private float stateTime;
@@ -24,7 +25,7 @@ public class Goomba extends Enemy {
         walkAnimation = new Animation<>(0.4f, frames);
         frames.clear();
         stateTime = 0;
-        setBounds(getX(), getY(), Platformer.toMeters(16), Platformer.toMeters(16));
+        setBounds(getX(), getY(), Constants.toMeters(16), Constants.toMeters(16));
     }
 
     public void update(float delta) {
@@ -58,35 +59,35 @@ public class Goomba extends Enemy {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.ENEMY_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.ENEMY_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.GROUND_BIT |
-                Platformer.PLAYER_BIT |
-                Platformer.BRICK_BIT |
-                Platformer.COIN_BIT |
-                Platformer.ENEMY_BIT |
-                Platformer.OBJECT_BIT;
+                Constants.GROUND_BIT |
+                        Constants.PLAYER_BIT |
+                        Constants.BRICK_BIT |
+                        Constants.COIN_BIT |
+                        Constants.ENEMY_BIT |
+                        Constants.OBJECT_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
         PolygonShape head = new PolygonShape();
         Vector2[] vertices = new Vector2[4];
-        vertices[0] = new Vector2(Platformer.toMeters(-3), Platformer.toMeters(7));
-        vertices[1] = new Vector2(Platformer.toMeters(-6), Platformer.toMeters(12));
-        vertices[2] = new Vector2(Platformer.toMeters(6), Platformer.toMeters(12));
-        vertices[3] = new Vector2(Platformer.toMeters(3), Platformer.toMeters(7));
+        vertices[0] = new Vector2(Constants.toMeters(-3), Constants.toMeters(7));
+        vertices[1] = new Vector2(Constants.toMeters(-6), Constants.toMeters(12));
+        vertices[2] = new Vector2(Constants.toMeters(6), Constants.toMeters(12));
+        vertices[3] = new Vector2(Constants.toMeters(3), Constants.toMeters(7));
         head.set(vertices);
         fixtureDef.shape = head;
         fixtureDef.restitution = 1.5f;
-        fixtureDef.filter.categoryBits = Platformer.ENEMY_HEAD_BIT;
+        fixtureDef.filter.categoryBits = Constants.ENEMY_HEAD_BIT;
         b2dbody.createFixture(fixtureDef).setUserData(this);
     }
 
     @Override
     public void hitOnHead(Player player) {
         toDestroy = true;
-        screen.getGame().assetManager.get("audio/sounds/stomp.wav", Sound.class).play();
+        screen.getGame().assets.get("audio/sounds/stomp.wav", Sound.class).play();
     }
 
     @Override

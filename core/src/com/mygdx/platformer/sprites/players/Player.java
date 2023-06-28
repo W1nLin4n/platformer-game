@@ -1,22 +1,20 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.players;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.enemies.Enemy;
+import com.mygdx.platformer.sprites.enemies.Turtle;
+import com.mygdx.platformer.tools.Constants;
 
 public class Player extends Sprite {
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD};
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD}
     public State currentState;
     public State previousState;
 
@@ -78,7 +76,7 @@ public class Player extends Sprite {
         playerDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 96, 0, 16, 16);
 
         definePlayer();
-        setBounds(0, 0, Platformer.toMeters(16), Platformer.toMeters(16));
+        setBounds(0, 0, Constants.toMeters(16), Constants.toMeters(16));
         setRegion(playerStand);
     }
 
@@ -102,13 +100,13 @@ public class Player extends Sprite {
             playerIsBig = false;
             timeToDefineLittlePlayer = true;
             setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-            screen.getGame().assetManager.get("audio/sounds/powerdown.wav", Sound.class).play();
+            screen.getGame().assets.get("audio/sounds/powerdown.wav", Sound.class).play();
         } else {
-            screen.getGame().assetManager.get("audio/music/mario_music.ogg", Music.class).stop();
-            screen.getGame().assetManager.get("audio/sounds/mariodie.wav", Sound.class).play();
+            screen.getGame().assets.get("audio/music/mario_music.ogg", Music.class).stop();
+            screen.getGame().assets.get("audio/sounds/mariodie.wav", Sound.class).play();
             playerIsDead = true;
             Filter filter = new Filter();
-            filter.maskBits = Platformer.NOTHING_BIT;
+            filter.maskBits = Constants.NOTHING_BIT;
             for(Fixture fixture : b2dbody.getFixtureList())
                 fixture.setFilterData(filter);
             b2dbody.applyLinearImpulse(new Vector2(0, 4f), b2dbody.getWorldCenter(), true);
@@ -119,12 +117,12 @@ public class Player extends Sprite {
         playerIsBig = true;
         timeToDefineBigPlayer = true;
         setBounds(getX(), getY(), getWidth(), getHeight() * 2);
-        screen.getGame().assetManager.get("audio/sounds/powerup.wav", Sound.class).play();
+        screen.getGame().assets.get("audio/sounds/powerup.wav", Sound.class).play();
     }
 
     public void update(float delta) {
         if(playerIsBig)
-            setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2 - Platformer.toMeters(7));
+            setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2 - Constants.toMeters(7));
         else
             setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
@@ -195,31 +193,31 @@ public class Player extends Sprite {
         world.destroyBody(b2dbody);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(currentPosition.add(0, Platformer.toMeters(10)));
+        bodyDef.position.set(currentPosition.add(0, Constants.toMeters(10)));
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2dbody = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.GROUND_BIT |
-                        Platformer.BRICK_BIT |
-                        Platformer.COIN_BIT |
-                        Platformer.OBJECT_BIT |
-                        Platformer.ENEMY_BIT |
-                        Platformer.ENEMY_HEAD_BIT |
-                        Platformer.ITEM_BIT;
+                Constants.GROUND_BIT |
+                        Constants.BRICK_BIT |
+                        Constants.COIN_BIT |
+                        Constants.OBJECT_BIT |
+                        Constants.ENEMY_BIT |
+                        Constants.ENEMY_HEAD_BIT |
+                        Constants.ITEM_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
-        shape.setPosition(new Vector2(0, Platformer.toMeters(-14)));
+        shape.setPosition(new Vector2(0, Constants.toMeters(-14)));
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Platformer.toMeters(-2), Platformer.toMeters(7)), new Vector2(Platformer.toMeters(2), Platformer.toMeters(7)));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_HEAD_BIT;
+        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
         fixtureDef.shape = head;
         fixtureDef.isSensor = true;
         b2dbody.createFixture(fixtureDef).setUserData(this);
@@ -237,22 +235,22 @@ public class Player extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.GROUND_BIT |
-                        Platformer.BRICK_BIT |
-                        Platformer.COIN_BIT |
-                        Platformer.OBJECT_BIT |
-                        Platformer.ENEMY_BIT |
-                        Platformer.ENEMY_HEAD_BIT |
-                        Platformer.ITEM_BIT;
+                Constants.GROUND_BIT |
+                        Constants.BRICK_BIT |
+                        Constants.COIN_BIT |
+                        Constants.OBJECT_BIT |
+                        Constants.ENEMY_BIT |
+                        Constants.ENEMY_HEAD_BIT |
+                        Constants.ITEM_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Platformer.toMeters(-2), Platformer.toMeters(7)), new Vector2(Platformer.toMeters(2), Platformer.toMeters(7)));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_HEAD_BIT;
+        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
         fixtureDef.shape = head;
         fixtureDef.isSensor = true;
         b2dbody.createFixture(fixtureDef).setUserData(this);
@@ -261,28 +259,28 @@ public class Player extends Sprite {
 
     public void definePlayer() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(Platformer.toMeters(32), Platformer.toMeters(128));
+        bodyDef.position.set(Constants.toMeters(32), Constants.toMeters(128));
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2dbody = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.GROUND_BIT |
-                Platformer.BRICK_BIT |
-                Platformer.COIN_BIT |
-                Platformer.OBJECT_BIT |
-                Platformer.ENEMY_BIT |
-                Platformer.ENEMY_HEAD_BIT |
-                Platformer.ITEM_BIT;
+                Constants.GROUND_BIT |
+                        Constants.BRICK_BIT |
+                        Constants.COIN_BIT |
+                        Constants.OBJECT_BIT |
+                        Constants.ENEMY_BIT |
+                        Constants.ENEMY_HEAD_BIT |
+                        Constants.ITEM_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Platformer.toMeters(-2), Platformer.toMeters(7)), new Vector2(Platformer.toMeters(2), Platformer.toMeters(7)));
-        fixtureDef.filter.categoryBits = Platformer.PLAYER_HEAD_BIT;
+        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
+        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
         fixtureDef.shape = head;
         fixtureDef.isSensor = true;
         b2dbody.createFixture(fixtureDef).setUserData(this);

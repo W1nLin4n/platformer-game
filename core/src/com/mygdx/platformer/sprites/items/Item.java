@@ -1,13 +1,13 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.items;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.Constants;
 
 public abstract class Item extends Sprite {
     protected GameScreen screen;
@@ -21,7 +21,7 @@ public abstract class Item extends Sprite {
         this.screen = screen;
         this.world = screen.getWorld();
         setPosition(x, y);
-        setBounds(getX(), getY(), Platformer.toMeters(16), Platformer.toMeters(16));
+        setBounds(getX(), getY(), Constants.toMeters(16), Constants.toMeters(16));
         defineItem();
         toDestroy = false;
         destroyed = false;

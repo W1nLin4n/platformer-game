@@ -1,10 +1,11 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.enemies;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
 
 public abstract class Enemy extends Sprite {
     protected World world;

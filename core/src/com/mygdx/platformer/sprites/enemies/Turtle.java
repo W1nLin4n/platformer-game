@@ -1,4 +1,4 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.enemies;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.Constants;
 
 public class Turtle extends Enemy {
     public static final int KICK_LEFT_SPEED = -2;
@@ -34,7 +35,7 @@ public class Turtle extends Enemy {
         destroyed = false;
         deadRotationDegrees = 0;
 
-        setBounds(getX(), getY(), Platformer.toMeters(16), Platformer.toMeters(24));
+        setBounds(getX(), getY(), Constants.toMeters(16), Constants.toMeters(24));
     }
 
     public TextureRegion getFrame(float delta) {
@@ -71,28 +72,28 @@ public class Turtle extends Enemy {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.ENEMY_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.ENEMY_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.GROUND_BIT |
-                        Platformer.PLAYER_BIT |
-                        Platformer.BRICK_BIT |
-                        Platformer.COIN_BIT |
-                        Platformer.ENEMY_BIT |
-                        Platformer.OBJECT_BIT;
+                Constants.GROUND_BIT |
+                        Constants.PLAYER_BIT |
+                        Constants.BRICK_BIT |
+                        Constants.COIN_BIT |
+                        Constants.ENEMY_BIT |
+                        Constants.OBJECT_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
         PolygonShape head = new PolygonShape();
         Vector2[] vertices = new Vector2[4];
-        vertices[0] = new Vector2(Platformer.toMeters(-3), Platformer.toMeters(7));
-        vertices[1] = new Vector2(Platformer.toMeters(-6), Platformer.toMeters(12));
-        vertices[2] = new Vector2(Platformer.toMeters(6), Platformer.toMeters(12));
-        vertices[3] = new Vector2(Platformer.toMeters(3), Platformer.toMeters(7));
+        vertices[0] = new Vector2(Constants.toMeters(-3), Constants.toMeters(7));
+        vertices[1] = new Vector2(Constants.toMeters(-6), Constants.toMeters(12));
+        vertices[2] = new Vector2(Constants.toMeters(6), Constants.toMeters(12));
+        vertices[3] = new Vector2(Constants.toMeters(3), Constants.toMeters(7));
         head.set(vertices);
         fixtureDef.shape = head;
         fixtureDef.restitution = 1.5f;
-        fixtureDef.filter.categoryBits = Platformer.ENEMY_HEAD_BIT;
+        fixtureDef.filter.categoryBits = Constants.ENEMY_HEAD_BIT;
         b2dbody.createFixture(fixtureDef).setUserData(this);
     }
 
@@ -120,7 +121,7 @@ public class Turtle extends Enemy {
             velocity.x = 1;
         }
 
-        setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - Platformer.toMeters(8));
+        setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - Constants.toMeters(8));
         if(currentState == State.DEAD) {
             deadRotationDegrees += 3;
             rotate(deadRotationDegrees);
@@ -160,7 +161,7 @@ public class Turtle extends Enemy {
     public void kill() {
         currentState = State.DEAD;
         Filter filter = new Filter();
-        filter.maskBits = Platformer.NOTHING_BIT;
+        filter.maskBits = Constants.NOTHING_BIT;
         for(Fixture fixture : b2dbody.getFixtureList())
             fixture.setFilterData(filter);
         b2dbody.applyLinearImpulse(new Vector2(0, 5f), b2dbody.getWorldCenter(), true);

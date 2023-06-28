@@ -1,12 +1,12 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.items;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.mygdx.platformer.Platformer;
-import com.mygdx.platformer.screen.GameScreen;
+import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.players.Player;
+import com.mygdx.platformer.tools.Constants;
 
 public class Mushroom extends Item {
 
@@ -25,14 +25,14 @@ public class Mushroom extends Item {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(Platformer.toMeters(7));
-        fixtureDef.filter.categoryBits = Platformer.ITEM_BIT;
+        shape.setRadius(Constants.toMeters(7));
+        fixtureDef.filter.categoryBits = Constants.ITEM_BIT;
         fixtureDef.filter.maskBits =
-                Platformer.PLAYER_BIT |
-                Platformer.OBJECT_BIT |
-                Platformer.GROUND_BIT |
-                Platformer.COIN_BIT |
-                Platformer.BRICK_BIT;
+                Constants.PLAYER_BIT |
+                        Constants.OBJECT_BIT |
+                        Constants.GROUND_BIT |
+                        Constants.COIN_BIT |
+                        Constants.BRICK_BIT;
 
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);

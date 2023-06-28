@@ -1,4 +1,4 @@
-package com.mygdx.platformer.sprite;
+package com.mygdx.platformer.sprites.items;
 
 import com.badlogic.gdx.math.Vector2;
 
