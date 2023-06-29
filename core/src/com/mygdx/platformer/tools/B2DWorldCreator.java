@@ -8,14 +8,14 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.platformer.screens.GameScreen;
 import com.mygdx.platformer.sprites.enemies.Enemy;
-import com.mygdx.platformer.sprites.enemies.Goomba;
-import com.mygdx.platformer.sprites.enemies.Turtle;
+import com.mygdx.platformer.sprites.enemies.Nezarakh;
+import com.mygdx.platformer.sprites.enemies.Flipper;
 import com.mygdx.platformer.sprites.tiles.Brick;
 import com.mygdx.platformer.sprites.tiles.Coin;
 
 public class B2DWorldCreator {
-    private Array<Goomba> goombas;
-    private Array<Turtle> turtles;
+    private Array<Nezarakh> goombas;
+    private Array<Flipper> turtles;
 
     public B2DWorldCreator(GameScreen screen) {
         TiledMap map = screen.getMap();
@@ -37,7 +37,7 @@ public class B2DWorldCreator {
             shape.setAsBox(Constants.toMeters(rect.getWidth()/2), Constants.toMeters(rect.getHeight()/2));
             fixtureDef.shape = shape;
             fixtureDef.filter.categoryBits = Constants.GROUND_BIT;
-            body.createFixture(fixtureDef);
+            body.createFixture(fixtureDef).setUserData("GROUND");
         }
 
         // Pipes creation
@@ -52,7 +52,7 @@ public class B2DWorldCreator {
             shape.setAsBox(Constants.toMeters(rect.getWidth()/2), Constants.toMeters(rect.getHeight()/2));
             fixtureDef.shape = shape;
             fixtureDef.filter.categoryBits = Constants.OBJECT_BIT;
-            body.createFixture(fixtureDef);
+            body.createFixture(fixtureDef).setUserData("PIPE");
         }
 
         // Coins creation
@@ -69,14 +69,14 @@ public class B2DWorldCreator {
         goombas = new Array<>();
         for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            goombas.add(new Goomba(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
+            goombas.add(new Nezarakh(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
 
         // Turtles creation
         turtles = new Array<>();
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            turtles.add(new Turtle(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
+            turtles.add(new Flipper(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
     }
 

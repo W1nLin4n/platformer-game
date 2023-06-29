@@ -9,75 +9,68 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.Interactive;
+import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.enemies.Enemy;
-import com.mygdx.platformer.sprites.enemies.Turtle;
+import com.mygdx.platformer.sprites.enemies.Flipper;
+import com.mygdx.platformer.sprites.enemies.Nezarakh;
+import com.mygdx.platformer.sprites.tiles.Brick;
+import com.mygdx.platformer.sprites.tiles.Coin;
+import com.mygdx.platformer.sprites.tiles.InteractiveTileObject;
 import com.mygdx.platformer.tools.Constants;
 
-public class Player extends Sprite {
-    public enum State {FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD}
+public abstract class Player extends Sprite implements Interactive {
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, DEAD}
     public State currentState;
     public State previousState;
 
     public World world;
     public Body b2dbody;
-    private GameScreen screen;
-    private TextureRegion playerStand;
-    private Animation<TextureRegion> playerRun;
-    private TextureRegion playerJump;
-    private TextureRegion bigPlayerStand;
-    private Animation<TextureRegion> bigPlayerRun;
-    private TextureRegion bigPlayerJump;
-    private Animation<TextureRegion> playerGrow;
-    private TextureRegion playerDead;
-    private float stateTimer;
-    private boolean runningRight;
-    private boolean playerIsBig;
-    private boolean runGrowAnimation;
-    private boolean timeToDefineBigPlayer;
-    private boolean timeToDefineLittlePlayer;
-    private boolean playerIsDead;
+    protected Vector2 spawnPoint;
+    protected GameScreen screen;
+    protected String spriteRegion;
+    protected TextureRegion playerStand;
+    protected Animation<TextureRegion> playerRun;
+    protected TextureRegion playerJump;
+    protected TextureRegion playerDead;
+    protected float stateTimer;
+    protected boolean runningRight;
+    protected boolean playerIsDead;
+    protected boolean canJump;
 
-    public Player(GameScreen screen) {
+    public Player(GameScreen screen, String spriteRegion, Vector2 spawnPoint) {
+        this.spriteRegion = spriteRegion;
         this.screen = screen;
         this.world = screen.getWorld();
+        this.spawnPoint = spawnPoint;
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
-        playerIsBig = false;
-        runGrowAnimation = false;
-        timeToDefineBigPlayer = false;
-        timeToDefineLittlePlayer = false;
         playerIsDead = false;
+        canJump = false;
 
         Array<TextureRegion> frames = new Array<>();
         for(int i = 1; i < 4; i++)
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("little_mario"), i*16, 0, 16, 16));
+            frames.add(new TextureRegion(screen.getAtlas().findRegion(spriteRegion), i*32, 0, 32, 64));
         playerRun = new Animation<>(0.1f, frames);
         frames.clear();
 
-        for(int i = 1; i < 4; i++)
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), i*16, 0, 16, 32));
-        bigPlayerRun = new Animation<>(0.1f, frames);
-        frames.clear();
+        playerJump = new TextureRegion(screen.getAtlas().findRegion(spriteRegion), 160, 0, 32, 64);
 
-        playerJump = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 80, 0, 16, 16);
-        bigPlayerJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 80, 0, 16, 32);
+        playerStand = new TextureRegion(screen.getAtlas().findRegion(spriteRegion), 0, 0, 32, 64);
 
-        playerStand = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 16, 16);
-        bigPlayerStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32);
-
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 240, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 240, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32));
-        playerGrow = new Animation<TextureRegion>(0.2f, frames);
-
-        playerDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 96, 0, 16, 16);
+        playerDead = new TextureRegion(screen.getAtlas().findRegion(spriteRegion), 480, 0, 32, 64);
 
         definePlayer();
-        setBounds(0, 0, Constants.toMeters(16), Constants.toMeters(16));
+        setBounds(0, 0, Constants.toMeters(16), Constants.toMeters(32));
         setRegion(playerStand);
+    }
+
+    public abstract void handleInput(float delta);
+
+    public Body getBody() {
+        return b2dbody;
     }
 
     public float getStateTimer() {
@@ -88,50 +81,62 @@ public class Player extends Sprite {
         return playerIsDead;
     }
 
-    public boolean isBig() {
-        return playerIsBig;
+    public boolean jump() {
+        if(canJump) {
+            canJump = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void hit(Enemy enemy) {
-        if(enemy instanceof Turtle && ((Turtle) enemy).getCurrentState() == Turtle.State.STANDING_SHELL) {
-            ((Turtle) enemy).kick(this.getX() <= enemy.getX() ? Turtle.KICK_RIGHT_SPEED : Turtle.KICK_LEFT_SPEED);
-        }
-        if(playerIsBig) {
-            playerIsBig = false;
-            timeToDefineLittlePlayer = true;
-            setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-            screen.getGame().assets.get("audio/sounds/powerdown.wav", Sound.class).play();
-        } else {
-            screen.getGame().assets.get("audio/music/mario_music.ogg", Music.class).stop();
-            screen.getGame().assets.get("audio/sounds/mariodie.wav", Sound.class).play();
-            playerIsDead = true;
-            Filter filter = new Filter();
-            filter.maskBits = Constants.NOTHING_BIT;
-            for(Fixture fixture : b2dbody.getFixtureList())
-                fixture.setFilterData(filter);
-            b2dbody.applyLinearImpulse(new Vector2(0, 4f), b2dbody.getWorldCenter(), true);
-        }
+    public void kill() {
+        playerIsDead = true;
+        Filter filter = new Filter();
+        filter.maskBits = Constants.NOTHING_BIT;
+        for(Fixture fixture : b2dbody.getFixtureList())
+            fixture.setFilterData(filter);
+        b2dbody.applyLinearImpulse(new Vector2(0, 4f), b2dbody.getWorldCenter(), true);
     }
-    public void grow() {
-        runGrowAnimation = true;
-        playerIsBig = true;
-        timeToDefineBigPlayer = true;
-        setBounds(getX(), getY(), getWidth(), getHeight() * 2);
-        screen.getGame().assets.get("audio/sounds/powerup.wav", Sound.class).play();
+
+    @Override
+    public void hit(Object o, Vector2 normal) {
+        if(o == null)
+            return;
+        else if(o instanceof WorldBox && normal.y > 0) {
+            screen.death();
+        }
+        else if(o instanceof String && (o.equals("GROUND") || o.equals("PIPE")) && normal.y > 0) {
+            canJump = true;
+        }
+        else if(o instanceof Brick) {
+            if(normal.y > 0)
+                canJump = true;
+        }
+        else if(o instanceof Coin) {
+            if(normal.y > 0)
+                canJump = true;
+        }
+        else if(o instanceof Player) {
+            if(normal.y != 0)
+                canJump = true;
+        }
+        else if(o instanceof Enemy) {
+            if(b2dbody.getPosition().y > ((Enemy) o).b2dbody.getPosition().y && Math.abs(b2dbody.getPosition().x - ((Enemy) o).b2dbody.getPosition().x) < Constants.toMeters(13)) {
+                b2dbody.setLinearVelocity(b2dbody.getLinearVelocity().scl(1, -0.7f));
+            }
+            else if(o instanceof Flipper && ((Flipper) o).currentState == Flipper.State.STANDING_SHELL) {
+                return;
+            }
+            else {
+                screen.death();
+            }
+        }
     }
 
     public void update(float delta) {
-        if(playerIsBig)
-            setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2 - Constants.toMeters(7));
-        else
-            setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2);
+        setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
-        if(timeToDefineBigPlayer) {
-            defineBigPlayer();
-        }
-        if(timeToDefineLittlePlayer) {
-            defineLittlePlayer();
-        }
     }
 
     public TextureRegion getFrame(float delta) {
@@ -142,21 +147,16 @@ public class Player extends Sprite {
             case DEAD:
                 region = playerDead;
                 break;
-            case GROWING:
-                region = playerGrow.getKeyFrame(stateTimer);
-                if(playerGrow.isAnimationFinished(stateTimer))
-                    runGrowAnimation = false;
-                break;
             case JUMPING:
-                region = playerIsBig ? bigPlayerJump : playerJump;
+                region = playerJump;
                 break;
             case RUNNING:
-                region = playerIsBig ? bigPlayerRun.getKeyFrame(stateTimer, true) : playerRun.getKeyFrame(stateTimer, true);
+                region = playerRun.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
             case STANDING:
             default:
-                region = playerIsBig ? bigPlayerStand : playerStand;
+                region = playerStand;
                 break;
         }
 
@@ -175,9 +175,7 @@ public class Player extends Sprite {
 
     public State getState() {
         if(playerIsDead)
-            return  State.DEAD;
-        else if(runGrowAnimation)
-            return State.GROWING;
+            return State.DEAD;
         else if(b2dbody.getLinearVelocity().y > 0 || (b2dbody.getLinearVelocity().y < 0 && previousState == State.JUMPING))
             return State.JUMPING;
         else if(b2dbody.getLinearVelocity().y < 0)
@@ -188,101 +186,27 @@ public class Player extends Sprite {
             return State.STANDING;
     }
 
-    public void defineBigPlayer() {
-        Vector2 currentPosition = b2dbody.getPosition();
-        world.destroyBody(b2dbody);
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(currentPosition.add(0, Constants.toMeters(10)));
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        b2dbody = world.createBody(bodyDef);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(Constants.toMeters(7));
-        fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
-        fixtureDef.filter.maskBits =
-                Constants.GROUND_BIT |
-                        Constants.BRICK_BIT |
-                        Constants.COIN_BIT |
-                        Constants.OBJECT_BIT |
-                        Constants.ENEMY_BIT |
-                        Constants.ENEMY_HEAD_BIT |
-                        Constants.ITEM_BIT;
-        fixtureDef.shape = shape;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-        shape.setPosition(new Vector2(0, Constants.toMeters(-14)));
-        fixtureDef.shape = shape;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
-        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
-        fixtureDef.shape = head;
-        fixtureDef.isSensor = true;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-        timeToDefineBigPlayer = false;
-    }
-
-    public void defineLittlePlayer() {
-        Vector2 currentPosition = b2dbody.getPosition();
-        world.destroyBody(b2dbody);
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(currentPosition);
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        b2dbody = world.createBody(bodyDef);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(Constants.toMeters(7));
-        fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
-        fixtureDef.filter.maskBits =
-                Constants.GROUND_BIT |
-                        Constants.BRICK_BIT |
-                        Constants.COIN_BIT |
-                        Constants.OBJECT_BIT |
-                        Constants.ENEMY_BIT |
-                        Constants.ENEMY_HEAD_BIT |
-                        Constants.ITEM_BIT;
-        fixtureDef.shape = shape;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
-        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
-        fixtureDef.shape = head;
-        fixtureDef.isSensor = true;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-        timeToDefineLittlePlayer = false;
-    }
-
     public void definePlayer() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(Constants.toMeters(32), Constants.toMeters(128));
+        bodyDef.position.set(spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         b2dbody = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(Constants.toMeters(7));
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(Constants.toMeters(7), Constants.toMeters(14));
         fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
         fixtureDef.filter.maskBits =
                 Constants.GROUND_BIT |
-                        Constants.BRICK_BIT |
-                        Constants.COIN_BIT |
-                        Constants.OBJECT_BIT |
-                        Constants.ENEMY_BIT |
-                        Constants.ENEMY_HEAD_BIT |
-                        Constants.ITEM_BIT;
+                Constants.BRICK_BIT |
+                Constants.COIN_BIT |
+                Constants.OBJECT_BIT |
+                Constants.ENEMY_BIT |
+                Constants.ITEM_BIT |
+                Constants.PLAYER_BIT |
+                Constants.WORLD_BOX_BIT |
+                Constants.WORLD_BOX_KILL_BIT;
         fixtureDef.shape = shape;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(Constants.toMeters(-2), Constants.toMeters(7)), new Vector2(Constants.toMeters(2), Constants.toMeters(7)));
-        fixtureDef.filter.categoryBits = Constants.PLAYER_HEAD_BIT;
-        fixtureDef.shape = head;
-        fixtureDef.isSensor = true;
         b2dbody.createFixture(fixtureDef).setUserData(this);
     }
 }

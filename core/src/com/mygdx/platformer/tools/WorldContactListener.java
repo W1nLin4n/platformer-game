@@ -1,6 +1,7 @@
 package com.mygdx.platformer.tools;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.platformer.sprites.Interactive;
 import com.mygdx.platformer.sprites.enemies.Enemy;
 import com.mygdx.platformer.sprites.tiles.InteractiveTileObject;
 import com.mygdx.platformer.sprites.items.Item;
@@ -13,16 +14,16 @@ public class WorldContactListener implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
-        int cDef = fixtureA.getFilterData().categoryBits | fixtureB.getFilterData().categoryBits;
+        if(fixtureA.getUserData() != null && fixtureA.getUserData() instanceof Interactive) {
+            ((Interactive) fixtureA.getUserData()).hit(fixtureB.getUserData(), contact.getWorldManifold().getNormal());
+        }
 
+        if(fixtureB.getUserData() != null && fixtureB.getUserData() instanceof Interactive) {
+            ((Interactive) fixtureB.getUserData()).hit(fixtureA.getUserData(), contact.getWorldManifold().getNormal());
+        }
+
+        /*
         switch (cDef) {
-            case Constants.PLAYER_HEAD_BIT | Constants.BRICK_BIT:
-            case Constants.PLAYER_HEAD_BIT | Constants.COIN_BIT:
-                if(fixtureA.getFilterData().categoryBits == Constants.PLAYER_HEAD_BIT)
-                    ((InteractiveTileObject) fixtureB.getUserData()).onHeadHit((Player) fixtureA.getUserData());
-                else
-                    ((InteractiveTileObject) fixtureA.getUserData()).onHeadHit((Player) fixtureB.getUserData());
-                break;
             case Constants.ENEMY_HEAD_BIT | Constants.PLAYER_BIT:
                 if(fixtureA.getFilterData().categoryBits == Constants.ENEMY_HEAD_BIT)
                     ((Enemy) fixtureA.getUserData()).hitOnHead((Player) fixtureB.getUserData());
@@ -58,6 +59,7 @@ public class WorldContactListener implements ContactListener {
                     ((Item) fixtureB.getUserData()).use((Player) fixtureA.getUserData());
                 break;
         }
+         */
     }
 
     @Override

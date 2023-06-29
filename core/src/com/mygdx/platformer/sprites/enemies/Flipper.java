@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.WorldBox;
+import com.mygdx.platformer.sprites.players.Ball;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 
-public class Turtle extends Enemy {
+public class Flipper extends Enemy {
     public static final int KICK_LEFT_SPEED = -2;
     public static final int KICK_RIGHT_SPEED = 2;
     public enum State {WALKING, STANDING_SHELL, MOVING_SHELL, DEAD}
@@ -23,13 +25,13 @@ public class Turtle extends Enemy {
     private float deadRotationDegrees;
     private boolean destroyed;
 
-    public Turtle(GameScreen screen, float x, float y) {
+    public Flipper(GameScreen screen, float x, float y) {
         super(screen, x, y);
 
         frames = new Array<>();
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 0, 0, 16, 24));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 16, 0, 16, 24));
-        shell = new TextureRegion(screen.getAtlas().findRegion("turtle"), 64, 0, 16, 24);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("flipper"), 0, 0, 64, 96));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("flipper"), 64, 0, 64, 96));
+        shell = new TextureRegion(screen.getAtlas().findRegion("flipper"), 128, 0, 64, 96);
         walkAnimation = new Animation<>(0.2f, frames);
         currentState = previousState = State.WALKING;
         destroyed = false;
@@ -71,40 +73,20 @@ public class Turtle extends Enemy {
         b2dbody = world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(Constants.toMeters(7));
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(Constants.toMeters(7), Constants.toMeters(7));
         fixtureDef.filter.categoryBits = Constants.ENEMY_BIT;
         fixtureDef.filter.maskBits =
                 Constants.GROUND_BIT |
-                        Constants.PLAYER_BIT |
-                        Constants.BRICK_BIT |
-                        Constants.COIN_BIT |
-                        Constants.ENEMY_BIT |
-                        Constants.OBJECT_BIT;
+                Constants.PLAYER_BIT |
+                Constants.BRICK_BIT |
+                Constants.COIN_BIT |
+                Constants.ENEMY_BIT |
+                Constants.OBJECT_BIT |
+                Constants.WORLD_BOX_BIT |
+                Constants.BALL_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
-
-        PolygonShape head = new PolygonShape();
-        Vector2[] vertices = new Vector2[4];
-        vertices[0] = new Vector2(Constants.toMeters(-3), Constants.toMeters(7));
-        vertices[1] = new Vector2(Constants.toMeters(-6), Constants.toMeters(12));
-        vertices[2] = new Vector2(Constants.toMeters(6), Constants.toMeters(12));
-        vertices[3] = new Vector2(Constants.toMeters(3), Constants.toMeters(7));
-        head.set(vertices);
-        fixtureDef.shape = head;
-        fixtureDef.restitution = 1.5f;
-        fixtureDef.filter.categoryBits = Constants.ENEMY_HEAD_BIT;
-        b2dbody.createFixture(fixtureDef).setUserData(this);
-    }
-
-    @Override
-    public void hitOnHead(Player player) {
-        if (currentState != State.STANDING_SHELL) {
-            currentState = State.STANDING_SHELL;
-            velocity.x = 0;
-        } else {
-            kick(player.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
-        }
     }
 
     @Override
@@ -139,23 +121,55 @@ public class Turtle extends Enemy {
         currentState = State.MOVING_SHELL;
     }
 
-    public State getCurrentState() {
-        return currentState;
-    }
-
     @Override
-    public void onEnemyHit(Enemy enemy) {
-        if(enemy instanceof Turtle) {
-            if(((Turtle) enemy).currentState == State.MOVING_SHELL && currentState != State.MOVING_SHELL) {
-                kill();
+    public void hit(Object o, Vector2 normal) {
+        if(o == null)
+            return;
+        else if(o instanceof WorldBox) {
+            reverseVelocity(true, false);
+        }
+        else if(o instanceof String && o.equals("GROUND")) {
+            if(normal.y == 0) {
+                reverseVelocity(true, false);
             }
-            else if(currentState == State.MOVING_SHELL && ((Turtle) enemy).currentState == State.WALKING )
-                return;
-            else
+        }
+        else if(o instanceof String && o.equals("PIPE")) {
+            if(normal.y == 0) {
+                reverseVelocity(true, false);
+            }
+        }
+        else if(o instanceof Enemy) {
+            if(o instanceof Flipper) {
+                if(((Flipper) o).currentState == State.MOVING_SHELL && currentState != State.MOVING_SHELL) {
+                    kill();
+                }
+                else if(currentState == State.MOVING_SHELL && ((Flipper) o).currentState == State.WALKING )
+                    return;
+                else
+                    reverseVelocity(true, false);
+            }
+            else if (currentState != State.MOVING_SHELL)
                 reverseVelocity(true, false);
         }
-        else if (currentState != State.MOVING_SHELL)
-            reverseVelocity(true, false);
+        else if(o instanceof Player) {
+            Player player = (Player) o;
+            Body playerBody = player.getBody();
+            if(playerBody.getPosition().y > b2dbody.getPosition().y && Math.abs(playerBody.getPosition().x - b2dbody.getPosition().x) < Constants.toMeters(13)) {
+                if (currentState != State.STANDING_SHELL) {
+                    currentState = State.STANDING_SHELL;
+                    velocity.x = 0;
+                } else {
+                    kick(player.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
+                }
+            }
+        }
+        else if(o instanceof Ball) {
+            kill();
+        }
+    }
+
+    public State getCurrentState() {
+        return currentState;
     }
 
     public void kill() {

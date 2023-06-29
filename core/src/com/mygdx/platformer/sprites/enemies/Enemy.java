@@ -5,9 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.sprites.Interactive;
 import com.mygdx.platformer.sprites.players.Player;
 
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends Sprite implements Interactive {
     protected World world;
     protected GameScreen screen;
     public Body b2dbody;
@@ -28,9 +29,8 @@ public abstract class Enemy extends Sprite {
     }
 
     protected abstract void defineEnemy();
-    public abstract void hitOnHead(Player player);
-    public abstract void onEnemyHit(Enemy enemy);
     public abstract void update(float delta);
+    public abstract void hit(Object o, Vector2 normal);
 
     public void reverseVelocity(boolean x, boolean y) {
         if(x)

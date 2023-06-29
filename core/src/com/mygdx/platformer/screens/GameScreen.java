@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -18,10 +20,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.platformer.Platformer;
 import com.mygdx.platformer.scenes.Hud;
 import com.mygdx.platformer.screens.GameOverScreen;
+import com.mygdx.platformer.sprites.Interactive;
+import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.enemies.Enemy;
 import com.mygdx.platformer.sprites.items.Item;
 import com.mygdx.platformer.sprites.items.ItemDef;
 import com.mygdx.platformer.sprites.items.Mushroom;
+import com.mygdx.platformer.sprites.players.Luigi;
+import com.mygdx.platformer.sprites.players.Mario;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.B2DWorldCreator;
 import com.mygdx.platformer.tools.Constants;
@@ -46,7 +52,9 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer b2ddr;
     private B2DWorldCreator b2dwc;
 
-    private Player player;
+    private Player player1;
+    private Player player2;
+    private WorldBox worldBox;
 
     private Music music;
 
@@ -55,7 +63,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(Platformer game){
         this.game = game;
-        atlas = game.assets.get("Mario_and_Enemies.pack", TextureAtlas.class);
+        atlas = game.assets.get("Sprites.atlas", TextureAtlas.class);
         gameCamera = new OrthographicCamera();
         gameViewport = new FitViewport(Constants.toMeters(Constants.V_WIDTH), Constants.toMeters(Constants.V_HEIGHT), gameCamera);
         gameViewport.apply();
@@ -70,7 +78,10 @@ public class GameScreen implements Screen {
         b2ddr = new Box2DDebugRenderer();
         b2dwc = new B2DWorldCreator(this);
 
-        player = new Player(this);
+        player1 = new Mario(this);
+        player2 = new Luigi(this);
+
+        worldBox = new WorldBox(this, (Integer) map.getProperties().get("width") * (Integer) map.getProperties().get("tilewidth"), (Integer) map.getProperties().get("height") * (Integer) map.getProperties().get("tileheight"));
 
         world.setContactListener(new WorldContactListener());
 
@@ -121,18 +132,21 @@ public class GameScreen implements Screen {
     }
 
     public void handleInput(float delta) {
-        if(player.currentState != Player.State.DEAD) {
-            if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-                player.b2dbody.applyLinearImpulse(new Vector2(0, 4f), player.b2dbody.getWorldCenter(), true);
-            if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2dbody.getLinearVelocity().x <= 2)
-                player.b2dbody.applyLinearImpulse(new Vector2(0.1f, 0), player.b2dbody.getWorldCenter(), true);
-            if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2dbody.getLinearVelocity().x >= -2)
-                player.b2dbody.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2dbody.getWorldCenter(), true);
+        if(player1.currentState != Player.State.DEAD && player2.currentState != Player.State.DEAD) {
+            player1.handleInput(delta);
+            player2.handleInput(delta);
         }
     }
 
+    public void death() {
+        game.assets.get("audio/music/mario_music.ogg", Music.class).stop();
+        game.assets.get("audio/sounds/mariodie.wav", Sound.class).play();
+        player1.kill();
+        player2.kill();
+    }
+
     public boolean gameOver() {
-        if((player.currentState == Player.State.DEAD && player.getStateTimer() > 3) || hud.timeLeft() == 0)
+        if((player1.currentState == Player.State.DEAD && player1.getStateTimer() > 3)  || (player2.currentState == Player.State.DEAD && player2.getStateTimer() > 3) || hud.timeLeft() == 0)
             return true;
         return false;
     }
@@ -143,10 +157,11 @@ public class GameScreen implements Screen {
 
         world.step(1/ Constants.FPS, 6, 2);
 
-        player.update(delta);
+        player1.update(delta);
+        player2.update(delta);
         for(Enemy enemy : b2dwc.getEnemies()) {
             enemy.update(delta);
-            if(enemy.getX() < player.getX() + Constants.toMeters(240))
+            if(enemy.getX() < gameCamera.position.x + Constants.toMeters(240))
                 enemy.b2dbody.setActive(true);
         }
 
@@ -155,8 +170,8 @@ public class GameScreen implements Screen {
 
         hud.update(delta);
 
-        if(player.currentState != Player.State.DEAD) {
-            gameCamera.position.x = player.b2dbody.getPosition().x;
+        if(player1.currentState != Player.State.DEAD && player2.currentState != Player.State.DEAD) {
+            gameCamera.position.x = Math.max(Math.max(player1.b2dbody.getPosition().x, player2.b2dbody.getPosition().x), Constants.toMeters(Constants.V_WIDTH/2f));
         }
 
         gameCamera.update();
@@ -176,7 +191,8 @@ public class GameScreen implements Screen {
 
         game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
-        player.draw(game.batch);
+        player1.draw(game.batch);
+        player2.draw(game.batch);
         for(Enemy enemy : b2dwc.getEnemies())
             enemy.draw(game.batch);
         for(Item item : items)
