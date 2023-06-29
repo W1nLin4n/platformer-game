@@ -1,0 +1,55 @@
+
+Sprites.png
+size: 2048, 128
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+ball
+  rotate: false
+  xy: 1542, 48
+  size: 32, 8
+  orig: 32, 8
+  offset: 0, 0
+  index: -1
+flipper
+  rotate: false
+  xy: 1348, 26
+  size: 192, 96
+  orig: 192, 96
+  offset: 0, 0
+  index: -1
+hlyba
+  rotate: false
+  xy: 0, 0
+  size: 42, 56
+  orig: 42, 56
+  offset: 0, 0
+  index: -1
+luigi
+  rotate: false
+  xy: 0, 58
+  size: 672, 64
+  orig: 672, 64
+  offset: 0, 0
+  index: -1
+mario
+  rotate: false
+  xy: 674, 58
+  size: 672, 64
+  orig: 672, 64
+  offset: 0, 0
+  index: -1
+nezarakh
+  rotate: false
+  xy: 1542, 58
+  size: 192, 64
+  orig: 192, 64
+  offset: 0, 0
+  index: -1
+princess
+  rotate: false
+  xy: 1736, 58
+  size: 34, 64
+  orig: 34, 64
+  offset: 0, 0
+  index: -1
