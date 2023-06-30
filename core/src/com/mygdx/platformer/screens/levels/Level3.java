@@ -34,7 +34,7 @@ public class Level3 extends Level {
         if(endGameMario && endGameLuigi && !endingDialogShown) {
             dialogBox = new DialogBox(game.batch, new Array<>(new String[]{
                     "Together\n" +
-                    "Olena Mykolaivna!!!! SAVE!!!! We don't want a nezarakh!!!!!\n" +
+                    "Olena Mykolaivna!!!! SAVE!!!! We don't want a nezarakh!!!!!\n",
                     "Pechka\n" +
                     "Hey guys, I understand everything, but the deadline was already 3 weeks ago ((",
                     "Hlyba\n" +
@@ -49,9 +49,10 @@ public class Level3 extends Level {
                     "This was the last time, guys!!! Now let's go to the class."}));
             endingDialogShown = true;
         }
-        super.render(delta);
         if(endGameMario && endGameLuigi && dialogBox == null)
             game.setGameState(Platformer.GameState.MENU);
+        else
+            super.render(delta);
     }
 
     @Override

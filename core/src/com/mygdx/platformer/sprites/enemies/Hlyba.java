@@ -47,6 +47,6 @@ public class Hlyba extends Sprite {
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
 
-        b2dbody.setLinearVelocity(new Vector2(fromLeft ? 1 : -1, 0));
+        b2dbody.setLinearVelocity(new Vector2(fromLeft ? 0.5f : -0.5f, 0));
     }
 }

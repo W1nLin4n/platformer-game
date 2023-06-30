@@ -29,9 +29,10 @@ public class Level2 extends Level {
             hlyba = new Hlyba(this, true);
             openingDialogShown = true;
         }
-        super.render(delta);
         if(exitedMario && exitedLuigi)
             game.setGameState(Platformer.GameState.LEVEL3);
+        else
+            super.render(delta);
     }
 
     @Override

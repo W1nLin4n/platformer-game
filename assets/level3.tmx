@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="200" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="117">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="200" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="119">
  <tileset firstgid="1" source="tileset_gutter.tsx"/>
  <layer id="1" name="Background" width="200" height="13">
   <data encoding="base64" compression="zlib">
@@ -86,28 +86,14 @@
   <object id="74" x="2704" y="64" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="10" name="Goombas">
-  <object id="75" x="2704" y="16" width="16" height="16"/>
-  <object id="76" x="2672" y="16" width="16" height="16"/>
-  <object id="77" x="2640" y="16" width="16" height="16"/>
-  <object id="79" x="2688" y="48" width="16" height="16"/>
-  <object id="80" x="2656" y="48" width="16" height="16"/>
-  <object id="81" x="2624" y="48" width="16" height="16"/>
   <object id="82" x="2672" y="96" width="16" height="16"/>
-  <object id="83" x="2640" y="96" width="16" height="16"/>
-  <object id="84" x="2608" y="96" width="16" height="16"/>
+  <object id="83" x="2624" y="96" width="16" height="16"/>
   <object id="94" x="1376" y="64" width="16" height="16"/>
   <object id="95" x="1280" y="64" width="16" height="16"/>
   <object id="97" x="1168" y="64" width="16" height="16"/>
   <object id="101" x="512" y="160" width="16" height="16"/>
   <object id="103" x="592" y="160" width="16" height="16"/>
-  <object id="108" x="2608" y="16" width="16" height="16"/>
-  <object id="109" x="2592" y="48" width="16" height="16"/>
-  <object id="110" x="2576" y="16" width="16" height="16"/>
-  <object id="111" x="2560" y="48" width="16" height="16"/>
-  <object id="112" x="2544" y="16" width="16" height="16"/>
-  <object id="113" x="2576" y="96" width="16" height="16"/>
-  <object id="114" x="2544" y="96" width="16" height="16"/>
-  <object id="116" x="2704" y="96" width="16" height="16"/>
+  <object id="116" x="2720" y="96" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="11" name="Turtles">
   <object id="85" x="2336" y="160" width="16" height="16"/>
