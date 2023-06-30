@@ -16,7 +16,7 @@ public class WorldBox {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(Constants.toMeters(0), 0);
+        bodyDef.position.set(0, 0);
 
         body = world.createBody(bodyDef);
 

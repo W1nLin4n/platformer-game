@@ -2,6 +2,7 @@ package com.mygdx.platformer;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.platformer.screens.GameOverScreen;
 import com.mygdx.platformer.screens.GameScreen;
 import com.mygdx.platformer.screens.LoadScreen;
 import com.mygdx.platformer.screens.MenuScreen;
@@ -34,12 +35,25 @@ public class Platformer extends Game {
 				previousState = currentState;
 				currentState = GameState.MENU;
 				break;
+			case GAME_OVER:
+				setScreen(new GameOverScreen(this));
+				previousState = currentState;
+				currentState = GameState.GAME_OVER;
+				break;
 			case LEVEL1:
 				setScreen(new GameScreen(this));
 				previousState = currentState;
 				currentState = GameState.LEVEL1;
 				break;
 		}
+	}
+
+	public GameState getCurrentState() {
+		return currentState;
+	}
+
+	public GameState getPreviousState() {
+		return previousState;
 	}
 
 	@Override

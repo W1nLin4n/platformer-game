@@ -26,7 +26,7 @@ public class B2DWorldCreator {
         Body body;
 
         // Ground creation
-        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Ground").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -41,7 +41,7 @@ public class B2DWorldCreator {
         }
 
         // Pipes creation
-        for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Pipes").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -56,25 +56,25 @@ public class B2DWorldCreator {
         }
 
         // Coins creation
-        for(MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Coins").getObjects().getByType(RectangleMapObject.class)){
             new Coin(object, screen);
         }
 
         // Bricks creation
-        for(MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Bricks").getObjects().getByType(RectangleMapObject.class)){
             new Brick(object, screen);
         }
 
         // Goombas creation
         goombas = new Array<>();
-        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Goombas").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             goombas.add(new Nezarakh(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
 
         // Turtles creation
         turtles = new Array<>();
-        for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get("Turtles").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             turtles.add(new Flipper(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }

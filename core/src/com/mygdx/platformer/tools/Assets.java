@@ -59,5 +59,7 @@ public class Assets extends AssetManager {
 
     private void getMapAssets() {
         load("level1.tmx", TiledMap.class);
+        load("level2.tmx", TiledMap.class);
+        load("level3.tmx", TiledMap.class);
     }
 }

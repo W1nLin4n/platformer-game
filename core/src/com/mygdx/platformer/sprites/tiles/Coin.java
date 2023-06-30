@@ -7,8 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.mygdx.platformer.screens.GameScreen;
-import com.mygdx.platformer.sprites.items.ItemDef;
-import com.mygdx.platformer.sprites.items.Mushroom;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 
@@ -38,12 +36,7 @@ public class Coin extends InteractiveTileObject {
                 if (!getCell().getTile().equals(tileSet.getTile(BLANK_COIN))) {
                     getCell().setTile(tileSet.getTile(BLANK_COIN));
                     screen.getHud().addScore(200);
-                    if(object.getProperties().containsKey("mushroom")) {
-                        screen.spawnItem(new ItemDef(new Vector2(body.getPosition().x, body.getPosition().y + Constants.toMeters(16)), Mushroom.class));
-                        screen.getGame().assets.get("audio/sounds/powerup_spawn.wav", Sound.class).play();
-                    } else {
-                        screen.getGame().assets.get("audio/sounds/coin.wav", Sound.class).play();
-                    }
+                    screen.getGame().assets.get("audio/sounds/coin.wav", Sound.class).play();
                 } else {
                     screen.getGame().assets.get("audio/sounds/breakblock.wav", Sound.class).play();
                 }

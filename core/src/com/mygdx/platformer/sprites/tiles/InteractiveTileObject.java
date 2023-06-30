@@ -60,7 +60,7 @@ public abstract class InteractiveTileObject implements Interactive {
     }
 
     public TiledMapTileLayer.Cell getCell() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(1);
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Graphic Layer");
         return layer.getCell((int)(Constants.toPixels(body.getPosition().x / 16)), (int)(Constants.toPixels(body.getPosition().y / 16)));
     }
 }

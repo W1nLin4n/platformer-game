@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.mygdx.platformer.screens.GameScreen;
-import com.mygdx.platformer.sprites.items.ItemDef;
-import com.mygdx.platformer.sprites.items.Mushroom;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 

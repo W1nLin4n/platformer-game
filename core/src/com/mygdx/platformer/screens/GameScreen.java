@@ -23,9 +23,6 @@ import com.mygdx.platformer.screens.GameOverScreen;
 import com.mygdx.platformer.sprites.Interactive;
 import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.enemies.Enemy;
-import com.mygdx.platformer.sprites.items.Item;
-import com.mygdx.platformer.sprites.items.ItemDef;
-import com.mygdx.platformer.sprites.items.Mushroom;
 import com.mygdx.platformer.sprites.players.Luigi;
 import com.mygdx.platformer.sprites.players.Mario;
 import com.mygdx.platformer.sprites.players.Player;
@@ -58,9 +55,6 @@ public class GameScreen implements Screen {
 
     private Music music;
 
-    private Array<Item> items;
-    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
-
     public GameScreen(Platformer game){
         this.game = game;
         atlas = game.assets.get("Sprites.atlas", TextureAtlas.class);
@@ -70,7 +64,7 @@ public class GameScreen implements Screen {
 
         hud = new Hud(game.batch);
 
-        map = game.assets.get("level1.tmx");
+        map = game.assets.get("level2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, Constants.toMeters(1));
         gameCamera.position.set(gameViewport.getWorldWidth()/2, gameViewport.getWorldHeight()/2, 0);
 
@@ -81,16 +75,13 @@ public class GameScreen implements Screen {
         player1 = new Mario(this);
         player2 = new Luigi(this);
 
-        worldBox = new WorldBox(this, (Integer) map.getProperties().get("width") * (Integer) map.getProperties().get("tilewidth"), (Integer) map.getProperties().get("height") * (Integer) map.getProperties().get("tileheight"));
+        worldBox = new WorldBox(this, getWorldWidth(), getWorldHeight());
 
         world.setContactListener(new WorldContactListener());
 
         music = game.assets.get("audio/music/mario_music.ogg", Music.class);
         music.setLooping(true);
         music.play();
-
-        items = new Array<>();
-        itemsToSpawn = new LinkedBlockingQueue<>();
     }
 
     public TiledMap getMap() {
@@ -99,6 +90,14 @@ public class GameScreen implements Screen {
 
     public World getWorld() {
         return world;
+    }
+
+    public float getWorldWidth() {
+        return ((Integer) map.getProperties().get("width")) * ((Integer) map.getProperties().get("tilewidth"));
+    }
+
+    public float getWorldHeight() {
+        return ((Integer) map.getProperties().get("height")) * ((Integer) map.getProperties().get("tileheight"));
     }
 
     public TextureAtlas getAtlas() {
@@ -116,19 +115,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
-    }
-
-    public void spawnItem(ItemDef itemDef) {
-        itemsToSpawn.add(itemDef);
-    }
-
-    public void handleSpawningItems() {
-        if(!itemsToSpawn.isEmpty()) {
-            ItemDef itemDef = itemsToSpawn.poll();
-            if(itemDef.type == Mushroom.class) {
-                items.add(new Mushroom(this, itemDef.position.x, itemDef.position.y));
-            }
-        }
     }
 
     public void handleInput(float delta) {
@@ -153,7 +139,6 @@ public class GameScreen implements Screen {
 
     public void update(float delta) {
         handleInput(delta);
-        handleSpawningItems();
 
         world.step(1/ Constants.FPS, 6, 2);
 
@@ -165,13 +150,17 @@ public class GameScreen implements Screen {
                 enemy.b2dbody.setActive(true);
         }
 
-        for(Item item : items)
-            item.update(delta);
-
         hud.update(delta);
 
         if(player1.currentState != Player.State.DEAD && player2.currentState != Player.State.DEAD) {
-            gameCamera.position.x = Math.max(Math.max(player1.b2dbody.getPosition().x, player2.b2dbody.getPosition().x), Constants.toMeters(Constants.V_WIDTH/2f));
+            gameCamera.position.x =
+                    Math.min(
+                        Math.max(
+                            Math.max(
+                                    player1.b2dbody.getPosition().x,
+                                    player2.b2dbody.getPosition().x),
+                            Constants.toMeters(Constants.V_WIDTH/2f)),
+                        Constants.toMeters(getWorldWidth() - Constants.V_WIDTH/2f));
         }
 
         gameCamera.update();
@@ -195,8 +184,6 @@ public class GameScreen implements Screen {
         player2.draw(game.batch);
         for(Enemy enemy : b2dwc.getEnemies())
             enemy.draw(game.batch);
-        for(Item item : items)
-            item.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -204,7 +191,7 @@ public class GameScreen implements Screen {
 
         if(gameOver()) {
             game.assets.get("audio/music/mario_music.ogg", Music.class).stop();
-            game.setScreen(new GameOverScreen(game));
+            game.setGameState(Platformer.GameState.GAME_OVER);
         }
     }
 
