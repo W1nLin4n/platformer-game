@@ -24,7 +24,6 @@ public class Assets extends AssetManager {
         getMusicAssets();
         getSoundAssets();
         getTextureAssets();
-        getMapAssets();
     }
 
     private void registerLoaders() {
@@ -57,9 +56,10 @@ public class Assets extends AssetManager {
         load("Sprites.atlas", TextureAtlas.class);
     }
 
-    private void getMapAssets() {
-        load("level1.tmx", TiledMap.class);
-        load("level2.tmx", TiledMap.class);
-        load("level3.tmx", TiledMap.class);
+    public void getLevel(int id) {
+        if(isLoaded(String.format("level%d.tmx", id)))
+            unload(String.format("level%d.tmx", id));
+        load(String.format("level%d.tmx", id), TiledMap.class);
+        finishLoading();
     }
 }

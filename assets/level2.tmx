@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="200" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="103">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="200" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="105">
  <tileset firstgid="1" source="tileset_gutter.tsx"/>
  <layer id="6" name="Background" width="200" height="13">
   <data encoding="base64" compression="zlib">
@@ -17,7 +17,7 @@
  </imagelayer>
  <layer id="7" name="Graphic Layer" width="200" height="13">
   <data encoding="base64" compression="zlib">
-   eJztl9EOwiAMRRlv+ge+7lG/V/2T6ec5E0wIKexSuuGye5LGTVl7W+gE5wgha3L3zj2CPX3985fZfLDStRRTEy9HnEeNb1SLpWatVkta591SQ8/8l2JP8++vYO/CWMtcJiBeHLM2j5xvKQdJCzpOC6I1pwMBeQ6ddySOdl1Y1rR37B65WMyh5G/JV895K+lI/4dz99b6f/uAnL6aWKlmcky8YOQ4lM4a6DmEELIuYzBCtMTv8KV3+Wlw7jxspayN0dn0B5pzaZy0n2rdU6HnDfQeYa29oM987o3rPP+3zv2BrNfR6fpD8i3ljI4jx6K0BgZD02r4kvZGTX9Ivlu+I8fi3/tD6g32B5GwXK97N9anrXZpHaXaSuMt5gy9prXXOqa3pr2Yhq3javx/AGdDVdM=
+   eJztl0tOxDAMQNPsYAesZtsl7PiedOAmA8cjlRLJspzEcdyGMH6SNW3H9S922jpnGMaenL1zn1G+fPv9pyA+SumY8inxlwPm0WKbG4tmzNJYNeldd80YRuZf830J/39H+SnoauZyYfiDPlvzyNmmcqBi4epJ4cSai4MD5z7uunP8SPtCs6ajfY/IRWMNKXs1WyPXrRQHfg7nzrXjT+8BufhafOGYjevEE2JcD6VvDe53iGEY+7JGMQwpcA+v7eU3i3O3y1GR9bE6nfng5lzSo96net+puN8b3HMOe70L+szvbDyG9X9i9Mpb0HkP8lHQ5ehQcPp1dbL5oGxTOXP1erifZB+S8p/yS7mUemBRFGkMG3g2WuaDsi251rv2d+H+5yAPDXZm6jdJfn+BtKfDfX3L5SXmAnsA7//a8wHt52LAULPBmY/kq3UWYP7pGoyV8oHri0m9s9l4zfQQrj3ls/Z8lj6/ueB84VrW8jsCzX6dXaw+fbXDdaRqS+lrrBn32KS/1pDRMc0iEo72K7H/C2pdYns=
   </data>
  </layer>
  <objectgroup id="11" name="Ground">
@@ -104,6 +104,8 @@
   <object id="79" x="2736" y="112" width="16" height="16"/>
   <object id="80" x="2768" y="112" width="16" height="16"/>
   <object id="81" x="2800" y="112" width="16" height="16"/>
+  <object id="103" x="592" y="16" width="16" height="16"/>
+  <object id="104" x="608" y="16" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="15" name="Goombas">
   <object id="83" x="288" y="160" width="16" height="16"/>

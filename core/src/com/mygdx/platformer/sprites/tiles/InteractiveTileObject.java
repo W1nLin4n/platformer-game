@@ -7,9 +7,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.Interactive;
-import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 
 public abstract class InteractiveTileObject implements Interactive {
@@ -18,8 +17,8 @@ public abstract class InteractiveTileObject implements Interactive {
     protected MapObject object;
     protected Rectangle bounds;
     protected Body body;
-    protected GameScreen screen;
-    public InteractiveTileObject(MapObject object, GameScreen screen) {
+    protected Level screen;
+    public InteractiveTileObject(MapObject object, Level screen) {
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.object = object;

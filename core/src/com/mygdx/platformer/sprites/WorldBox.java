@@ -3,14 +3,14 @@ package com.mygdx.platformer.sprites;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.tools.Constants;
 
 public class WorldBox {
     private World world;
     private Body body;
-    private GameScreen screen;
-    public WorldBox(GameScreen screen, float width, float height) {
+    private Level screen;
+    public WorldBox(Level screen, float width, float height) {
         this.screen = screen;
         this.world = screen.getWorld();
 

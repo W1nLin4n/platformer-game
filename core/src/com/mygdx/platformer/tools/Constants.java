@@ -1,5 +1,8 @@
 package com.mygdx.platformer.tools;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 public class Constants {
     public static final int V_WIDTH = 400;
     public static final int V_HEIGHT = 208;
@@ -17,6 +20,8 @@ public class Constants {
     public static final short WORLD_BOX_BIT = 256;
     public static final short WORLD_BOX_KILL_BIT = 512;
     public static final short BALL_BIT = 1024;
+    public static final short TRIGGER_BIT = 2048;
+    public static final short HLYBA_BIT = 4096;
 
     public static float toMeters(float pixels) {
         return pixels / PPM;
@@ -24,5 +29,10 @@ public class Constants {
 
     public static float toPixels(float meters) {
         return meters * PPM;
+    }
+
+    public static String toUtf8(String string) {
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(string);
+        return StandardCharsets.UTF_8.decode(buffer).toString();
     }
 }

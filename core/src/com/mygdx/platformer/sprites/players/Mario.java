@@ -5,17 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.tools.Constants;
 
 public class Mario extends Player {
     private Array<Ball> balls;
     private float lastSpawnedBallTime;
 
-    public Mario(GameScreen screen) {
+    public Mario(Level screen) {
         super(screen, "mario", new Vector2(Constants.toMeters(32), Constants.toMeters(128)));
         balls = new Array<>();
-        lastSpawnedBallTime = 0;
+        lastSpawnedBallTime = 0.5f;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Mario extends Player {
             b2dbody.applyLinearImpulse(new Vector2(0.1f, 0), b2dbody.getWorldCenter(), true);
         if(Gdx.input.isKeyPressed(Input.Keys.A) && b2dbody.getLinearVelocity().x >= -2)
             b2dbody.applyLinearImpulse(new Vector2(-0.1f, 0), b2dbody.getWorldCenter(), true);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && lastSpawnedBallTime >= 1.5f) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && lastSpawnedBallTime >= 0.5f) {
             balls.add(new Ball(screen, b2dbody.getPosition(), runningRight));
             lastSpawnedBallTime = 0;
         }

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.players.Ball;
 import com.mygdx.platformer.sprites.players.Player;
@@ -18,7 +18,7 @@ public class Nezarakh extends Enemy {
     private Animation<TextureRegion> walkAnimation;
     private Array<TextureRegion> frames;
 
-    public Nezarakh(GameScreen screen, float x, float y) {
+    public Nezarakh(Level screen, float x, float y) {
         super(screen, x, y);
         frames = new Array<>();
         for(int i = 0; i < 2; i++) {
@@ -34,6 +34,7 @@ public class Nezarakh extends Enemy {
         stateTime += delta;
         if(toDestroy && !destroyed) {
             world.destroyBody(b2dbody);
+            b2dbody = null;
             destroyed = true;
             setRegion(new TextureRegion(screen.getAtlas().findRegion("nezarakh"), 128, 0, 64, 64));
             screen.getHud().addScore(200);

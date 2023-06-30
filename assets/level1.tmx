@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="170">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="218" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="170">
  <tileset firstgid="1" name="tileset_gutter" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="924" columns="33">
   <image source="tileset_gutter.png" width="594" height="504"/>
   <tile id="0">
@@ -112,9 +112,9 @@
   </tile>
  </tileset>
  <tileset firstgid="925" source="tileset_gutter.tsx"/>
- <layer id="1" name="Background" width="240" height="13">
+ <layer id="1" name="Background" width="218" height="13">
   <data encoding="base64" compression="zlib">
-   eJztwzEJAAAMA7Ay/4bqrir2JZBeUlVVVVVVVVVVVVVV1ccDxULniQ==
+   eJztwwEJAAAMA6Dx/oXWbkGuYC+pqqqqqqqqqqqqqvrqACLzFp8=
   </data>
  </layer>
  <imagelayer id="9" name="Building3" offsetx="1675" offsety="85">
@@ -126,9 +126,9 @@
  <imagelayer id="10" name="Building1" offsetx="3296" offsety="74">
   <image source="building1.png" width="200" height="134"/>
  </imagelayer>
- <layer id="2" name="Graphic Layer" width="240" height="13">
+ <layer id="2" name="Graphic Layer" width="218" height="13">
   <data encoding="base64" compression="zlib">
-   eJztmMFShDAMhgu39aaeuHLUm4o+qeubqI9nnTEzMdu0DS3Qzv7fTAaGtsmf0MCyzgEAgHPvo3Nnbx9juY9SPyWxS+P2ngP0XyefvlZf3r6VmvG6arUlHzE/Fiz7IaWf++s1B+i3U+u53ju8rrVqmxuzVqzec4D+9TH3iNUK09ECdmRMmDa3pEbWtZoeGpv+7Iq2KAAAAAAAAACYkN9h9C3Fj1twGpy7GerPzaVGftpa7Tt1yjjP8W+JSczKeYq5YC3B/y9YU+/ZXeoA25LquQc/9sjG7wxzWyWWw5GEejDUC1J/qG/27qM5YBqt1n9rLHnnvgtTPcfHb/3xydu9Mj/lq4X7lsrhKGI9yK9J/VrPaH1E96D0txJfH+pdrYdbrX9NFp/bK7O3IZ73wuYRue9CPm8RMfk4xX+O6KC5NfSvJZQDkZNDadw1Ocg9T/rldak/1i/yurwHcn9Y9dP6WO9qz55f/S+d9fAAu7BatUGd69cU9t9+AKOpa6Q=
+   eJztl8tOxDAMRdPuhh3Mqtsuhx3Q4UsZ/oTh8wgCS5YnTuIm0ybSPZLVqnn42rX7cA4A0BMfo3MXb59j+R6l+5T4LvXbewzQ3zZfPqart28lNh6/lgPaI7aPBct9S+nn+/UaA/TbqfX83Qoef60c5Pqs5av3GKB/vc8tfFmZ9hawIWPCtLklObKu1fTQ2PRvDZYSAAAAAAAAIBP5n0Df+vx4Dw6Dcw9D/bm51IhPW6v9R00Z5zn7W3wSs3KeYi5YS/D/2TX5nt2tDvBHqjdOfuyZjT8Z5rZKLIY9CfVKqGal/lB9b13vc8A0Ws0/YdGX+25J9QYff/THF29HZX5qrxbym4phL2K9wq9J/Vpta/VO96D024OvD/WY1mst5X/xGs7M3oe4voXNI3LfLXzeInzycfL/GtFBc2voX0soBiInhlK/a2KQtUn65XWpP1bX8rq8B7I+rPppfazHtGfEr/63O/XaALuxWrlBnuvntFf7AS7oa44=
   </data>
  </layer>
  <objectgroup id="3" name="Ground">
@@ -151,7 +151,7 @@
   <object id="39" x="2512" y="144" width="16" height="48"/>
   <object id="40" x="2528" y="160" width="16" height="32"/>
   <object id="41" x="2544" y="176" width="16" height="16"/>
-  <object id="42" x="2496" y="192" width="1344" height="16"/>
+  <object id="42" x="2496" y="192" width="992" height="16"/>
   <object id="50" x="2960" y="128" width="16" height="64"/>
   <object id="51" x="2944" y="144" width="16" height="48"/>
   <object id="52" x="2928" y="160" width="16" height="32"/>

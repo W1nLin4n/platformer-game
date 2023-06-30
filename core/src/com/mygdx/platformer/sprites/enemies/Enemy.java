@@ -4,19 +4,18 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.Interactive;
-import com.mygdx.platformer.sprites.players.Player;
 
 public abstract class Enemy extends Sprite implements Interactive {
     protected World world;
-    protected GameScreen screen;
+    protected Level screen;
     public Body b2dbody;
     public Vector2 velocity;
     protected boolean toDestroy;
     protected boolean destroyed;
 
-    public Enemy(GameScreen screen, float x, float y) {
+    public Enemy(Level screen, float x, float y) {
         this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);

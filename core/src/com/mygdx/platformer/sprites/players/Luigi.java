@@ -3,11 +3,11 @@ package com.mygdx.platformer.sprites.players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.tools.Constants;
 
 public class Luigi extends Player {
-    public Luigi(GameScreen screen) {
+    public Luigi(Level screen) {
         super(screen, "luigi", new Vector2(Constants.toMeters(64), Constants.toMeters(128)));
     }
 

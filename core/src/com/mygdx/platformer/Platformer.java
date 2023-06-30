@@ -3,9 +3,11 @@ package com.mygdx.platformer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.platformer.screens.GameOverScreen;
-import com.mygdx.platformer.screens.GameScreen;
 import com.mygdx.platformer.screens.LoadScreen;
 import com.mygdx.platformer.screens.MenuScreen;
+import com.mygdx.platformer.screens.levels.Level1;
+import com.mygdx.platformer.screens.levels.Level2;
+import com.mygdx.platformer.screens.levels.Level3;
 import com.mygdx.platformer.tools.Assets;
 
 public class Platformer extends Game {
@@ -41,9 +43,22 @@ public class Platformer extends Game {
 				currentState = GameState.GAME_OVER;
 				break;
 			case LEVEL1:
-				setScreen(new GameScreen(this));
+				assets.getLevel(1);
+				setScreen(new Level1(this));
 				previousState = currentState;
 				currentState = GameState.LEVEL1;
+				break;
+			case LEVEL2:
+				assets.getLevel(2);
+				setScreen(new Level2(this));
+				previousState = currentState;
+				currentState = GameState.LEVEL2;
+				break;
+			case LEVEL3:
+				assets.getLevel(3);
+				setScreen(new Level3(this));
+				previousState = currentState;
+				currentState = GameState.LEVEL3;
 				break;
 		}
 	}

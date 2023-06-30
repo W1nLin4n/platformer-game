@@ -5,12 +5,12 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 
 public class Brick extends InteractiveTileObject {
-    public Brick(MapObject object, GameScreen screen) {
+    public Brick(MapObject object, Level screen) {
         super(object, screen);
         for(Fixture fixture : body.getFixtureList()) {
             fixture.setUserData(this);
@@ -26,7 +26,6 @@ public class Brick extends InteractiveTileObject {
             Player player = (Player) o;
             Body playerBody = player.getBody();
 
-            // If player's head hit brick
             if(playerBody.getPosition().y < body.getPosition().y && Math.abs(playerBody.getPosition().x - body.getPosition().x) < Constants.toMeters(bounds.getWidth()/2)) {
                 setCategoryFilter(Constants.DESTROYED_BIT);
                 getCell().setTile(null);

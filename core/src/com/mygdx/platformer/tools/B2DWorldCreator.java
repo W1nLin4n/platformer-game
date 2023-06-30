@@ -6,7 +6,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
+import com.mygdx.platformer.sprites.Trigger;
 import com.mygdx.platformer.sprites.enemies.Enemy;
 import com.mygdx.platformer.sprites.enemies.Nezarakh;
 import com.mygdx.platformer.sprites.enemies.Flipper;
@@ -14,10 +15,10 @@ import com.mygdx.platformer.sprites.tiles.Brick;
 import com.mygdx.platformer.sprites.tiles.Coin;
 
 public class B2DWorldCreator {
-    private Array<Nezarakh> goombas;
-    private Array<Flipper> turtles;
+    private Array<Nezarakh> nezarakhs;
+    private Array<Flipper> flippers;
 
-    public B2DWorldCreator(GameScreen screen) {
+    public B2DWorldCreator(Level screen) {
         TiledMap map = screen.getMap();
         World world = screen.getWorld();
         BodyDef bodyDef = new BodyDef();
@@ -65,25 +66,30 @@ public class B2DWorldCreator {
             new Brick(object, screen);
         }
 
-        // Goombas creation
-        goombas = new Array<>();
+        // Nezarakhs creation
+        nezarakhs = new Array<>();
         for(MapObject object : map.getLayers().get("Goombas").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            goombas.add(new Nezarakh(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
+            nezarakhs.add(new Nezarakh(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
         }
 
-        // Turtles creation
-        turtles = new Array<>();
+        // Flippers creation
+        flippers = new Array<>();
         for(MapObject object : map.getLayers().get("Turtles").getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            turtles.add(new Flipper(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
+            flippers.add(new Flipper(screen, Constants.toMeters(rect.getX()), Constants.toMeters(rect.getY())));
+        }
+
+        // Triggers creation
+        for(MapObject object : map.getLayers().get("Triggers").getObjects().getByType(RectangleMapObject.class)){
+            new Trigger(object, screen);
         }
     }
 
     public Array<Enemy> getEnemies() {
         Array<Enemy> enemies = new Array<>();
-        enemies.addAll(goombas);
-        enemies.addAll(turtles);
+        enemies.addAll(nezarakhs);
+        enemies.addAll(flippers);
         return enemies;
     }
 }

@@ -1,22 +1,20 @@
 package com.mygdx.platformer.sprites.players;
 
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.Interactive;
+import com.mygdx.platformer.sprites.Trigger;
 import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.enemies.Enemy;
 import com.mygdx.platformer.sprites.enemies.Flipper;
-import com.mygdx.platformer.sprites.enemies.Nezarakh;
+import com.mygdx.platformer.sprites.enemies.Hlyba;
 import com.mygdx.platformer.sprites.tiles.Brick;
 import com.mygdx.platformer.sprites.tiles.Coin;
-import com.mygdx.platformer.sprites.tiles.InteractiveTileObject;
 import com.mygdx.platformer.tools.Constants;
 
 public abstract class Player extends Sprite implements Interactive {
@@ -27,7 +25,7 @@ public abstract class Player extends Sprite implements Interactive {
     public World world;
     public Body b2dbody;
     protected Vector2 spawnPoint;
-    protected GameScreen screen;
+    protected Level screen;
     protected String spriteRegion;
     protected TextureRegion playerStand;
     protected Animation<TextureRegion> playerRun;
@@ -38,7 +36,7 @@ public abstract class Player extends Sprite implements Interactive {
     protected boolean playerIsDead;
     protected boolean canJump;
 
-    public Player(GameScreen screen, String spriteRegion, Vector2 spawnPoint) {
+    public Player(Level screen, String spriteRegion, Vector2 spawnPoint) {
         this.spriteRegion = spriteRegion;
         this.screen = screen;
         this.world = screen.getWorld();
@@ -123,7 +121,7 @@ public abstract class Player extends Sprite implements Interactive {
         }
         else if(o instanceof Enemy) {
             if(b2dbody.getPosition().y > ((Enemy) o).b2dbody.getPosition().y && Math.abs(b2dbody.getPosition().x - ((Enemy) o).b2dbody.getPosition().x) < Constants.toMeters(13)) {
-                b2dbody.setLinearVelocity(b2dbody.getLinearVelocity().scl(1, -0.7f));
+                b2dbody.setLinearVelocity(b2dbody.getLinearVelocity().scl(1, -0.9f));
             }
             else if(o instanceof Flipper && ((Flipper) o).currentState == Flipper.State.STANDING_SHELL) {
                 return;
@@ -131,6 +129,12 @@ public abstract class Player extends Sprite implements Interactive {
             else {
                 screen.death();
             }
+        }
+        else if(o instanceof Trigger) {
+            screen.triggerEvent(this, ((Trigger) o).triggerEvent);
+        }
+        else if(o instanceof Hlyba) {
+            screen.death();
         }
     }
 
@@ -205,7 +209,9 @@ public abstract class Player extends Sprite implements Interactive {
                 Constants.ITEM_BIT |
                 Constants.PLAYER_BIT |
                 Constants.WORLD_BOX_BIT |
-                Constants.WORLD_BOX_KILL_BIT;
+                Constants.WORLD_BOX_KILL_BIT |
+                Constants.TRIGGER_BIT |
+                Constants.HLYBA_BIT;
         fixtureDef.shape = shape;
         b2dbody.createFixture(fixtureDef).setUserData(this);
     }

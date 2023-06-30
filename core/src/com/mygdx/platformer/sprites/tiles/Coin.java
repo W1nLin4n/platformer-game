@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.players.Player;
 import com.mygdx.platformer.tools.Constants;
 
@@ -14,7 +14,7 @@ public class Coin extends InteractiveTileObject {
     private static TiledMapTileSet tileSet;
     private final int BLANK_COIN = 28;
 
-    public Coin(MapObject object, GameScreen screen) {
+    public Coin(MapObject object, Level screen) {
         super(object, screen);
         tileSet = map.getTileSets().getTileSet("tileset_gutter");
         for(Fixture fixture : body.getFixtureList()) {
@@ -31,7 +31,6 @@ public class Coin extends InteractiveTileObject {
             Player player = (Player) o;
             Body playerBody = player.getBody();
 
-            // If player's head hit coin block
             if(playerBody.getPosition().y < body.getPosition().y && Math.abs(playerBody.getPosition().x - body.getPosition().x) < Constants.toMeters(bounds.getWidth()/2)) {
                 if (!getCell().getTile().equals(tileSet.getTile(BLANK_COIN))) {
                     getCell().setTile(tileSet.getTile(BLANK_COIN));

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.platformer.screens.GameScreen;
+import com.mygdx.platformer.screens.levels.Level;
 import com.mygdx.platformer.sprites.WorldBox;
 import com.mygdx.platformer.sprites.players.Ball;
 import com.mygdx.platformer.sprites.players.Player;
@@ -25,7 +25,7 @@ public class Flipper extends Enemy {
     private float deadRotationDegrees;
     private boolean destroyed;
 
-    public Flipper(GameScreen screen, float x, float y) {
+    public Flipper(Level screen, float x, float y) {
         super(screen, x, y);
 
         frames = new Array<>();
@@ -97,22 +97,25 @@ public class Flipper extends Enemy {
 
     @Override
     public void update(float delta) {
-        setRegion(getFrame(delta));
-        if(currentState == State.STANDING_SHELL && stateTime > 5) {
-            currentState = State.WALKING;
-            velocity.x = 1;
-        }
-
-        setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - Constants.toMeters(8));
-        if(currentState == State.DEAD) {
-            deadRotationDegrees += 3;
-            rotate(deadRotationDegrees);
-            if(stateTime > 5 && !destroyed) {
-                world.destroyBody(b2dbody);
-                destroyed = true;
+        if(!destroyed) {
+            setRegion(getFrame(delta));
+            if(currentState == State.STANDING_SHELL && stateTime > 5) {
+                currentState = State.WALKING;
+                velocity.x = 1;
             }
-        } else {
-            b2dbody.setLinearVelocity(velocity);
+
+            setPosition(b2dbody.getPosition().x - getWidth() / 2, b2dbody.getPosition().y - Constants.toMeters(8));
+            if(currentState == State.DEAD) {
+                deadRotationDegrees += 3;
+                rotate(deadRotationDegrees);
+                if(stateTime > 5 && !destroyed) {
+                    world.destroyBody(b2dbody);
+                    b2dbody = null;
+                    destroyed = true;
+                }
+            } else {
+                b2dbody.setLinearVelocity(velocity);
+            }
         }
     }
 
