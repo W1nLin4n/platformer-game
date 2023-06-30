@@ -130,7 +130,7 @@ public abstract class Level implements Screen {
 
     public void death() {
         game.assets.get("audio/music/mario_music.ogg", Music.class).stop();
-        game.assets.get("audio/sounds/mariodie.wav", Sound.class).play();
+        game.assets.get("audio/sounds/laugh.wav", Sound.class).play();
         player1.kill();
         player2.kill();
     }

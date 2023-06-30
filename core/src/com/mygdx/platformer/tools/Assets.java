@@ -50,6 +50,7 @@ public class Assets extends AssetManager {
         load("audio/sounds/powerdown.wav", Sound.class);
         load("audio/sounds/stomp.wav", Sound.class);
         load("audio/sounds/mariodie.wav", Sound.class);
+        load("audio/sounds/laugh.wav", Sound.class);
     }
 
     private void getTextureAssets() {
