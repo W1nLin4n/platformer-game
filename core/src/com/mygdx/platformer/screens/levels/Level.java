@@ -136,7 +136,7 @@ public abstract class Level implements Screen {
     }
 
     public boolean gameOver() {
-        if((player1.currentState == Player.State.DEAD && player1.getStateTimer() > 3)  || (player2.currentState == Player.State.DEAD && player2.getStateTimer() > 3) || hud.timeLeft() == 0)
+        if((player1.currentState == Player.State.DEAD && player1.getStateTimer() > 3)  || (player2.currentState == Player.State.DEAD && player2.getStateTimer() > 3))
             return true;
         return false;
     }
@@ -168,6 +168,10 @@ public abstract class Level implements Screen {
             hlyba.update(delta);
 
         hud.update(delta);
+        if(hud.toSetGameOver) {
+            hud.toSetGameOver = false;
+            death();
+        }
 
         if(player1.currentState != Player.State.DEAD && player2.currentState != Player.State.DEAD) {
             gameCamera.position.x =

@@ -19,6 +19,7 @@ public class Hud implements Disposable {
     private Integer worldTimer;
     private float timeCount;
     private Integer score;
+    public boolean toSetGameOver;
 
     Label countdownLabel;
     Label scoreLabel;
@@ -31,6 +32,7 @@ public class Hud implements Disposable {
         worldTimer = 300;
         timeCount = 0;
         score = 0;
+        toSetGameOver = false;
 
         viewport = new FitViewport(Constants.V_WIDTH, Constants.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
@@ -61,13 +63,15 @@ public class Hud implements Disposable {
         timeCount += delta;
         if(timeCount >= 1) {
             worldTimer--;
-            countdownLabel.setText(String.format("%03d", worldTimer));
+            if(worldTimer == 0)
+                toSetGameOver = true;
+            countdownLabel.setText(String.format("%03d", Math.max(0, worldTimer)));
             timeCount -= 1;
         }
     }
 
     public int timeLeft() {
-        return worldTimer;
+        return Math.max(0, worldTimer);
     }
 
     public void addScore(int value) {
